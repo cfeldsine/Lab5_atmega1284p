@@ -15,42 +15,27 @@
 # that they are not ran in isolation but in the order shown and the state of the device is not reset or 
 # altered in between executions (unless preconditions are used).
 
-tests = [ {'description': 'PINA: 0x00 => PINC: 0x40',
-    'steps': [ {'inputs': [('PINA',0x00)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x40)],
+tests = [ {'description': 'PINA: 0x02 => PORTB: 0x24',
+    'steps': [ {'inputs': [('PINA',0x01)], 'iterations': 2 } ],
+    'expected': [('PORTB',0x24)],
     },
 
-    {'description': 'PINA: 0x02 => PINC: 0x60',
-    'steps': [ {'inputs': [('PINA',0x02)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x60)],
+    {'description': 'PINA: 0x01, PINA: 0x00, PINA:0x01 => PORTB: 0x12',
+    'steps': [ {'inputs': [('PINA',0x01)], 'iterations': 2 },
+    {'inputs': [('PINA',0x00)], 'iterations': 2 },
+    {'inputs': [('PINA',0x01)], 'iterations': 2 }],
+    'expected': [('PORTB',0x12)],
     },
 
-    {'description': 'PINA: 0x03 => PINC: 0x70',
-    'steps': [ {'inputs': [('PINA',0x03)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x70)],
-    },
-
-    {'description': 'PINA: 0x06 => PINC: 0x38',
-    'steps': [ {'inputs': [('PINA',0x06)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x38)],
-    },
-
-    {'description': 'PINA: 0x09 => PINC: 0x3C',
-    'steps': [ {'inputs': [('PINA',0x09)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x3C)],
-    },
-
-    {'description': 'PINA: 0x0A => PINC: 0x3E',
-    'steps': [ {'inputs': [('PINA',0x0A)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x3E)],
-    },
-
-    {'description': 'PINA: 0x0D => PINC: 0x3F',
-    'steps': [ {'inputs': [('PINA',0x0D)], 'iterations': 5 } ],
-    'expected': [('PORTC',0x3F)],
+    {'description': 'PINA: 0x01, PINA: 0x00, PINA: 0x01, PINA: 0x00, PINA: 0x01 => PORTB: 0x09',
+    'steps': [ {'inputs': [('PINA',0x01)], 'iterations': 2 },
+    {'inputs': [('PINA',0x00)], 'iterations': 2 },
+    {'inputs': [('PINA',0x01)], 'iterations': 2 },
+    {'inputs': [('PINA',0x00)], 'iterations': 2 },
+    {'inputs': [('PINA',0x01)], 'iterations': 2 }],
+    'expected': [('PORTC',0x00)],
     },
 ]
-
 
 
 
@@ -58,3 +43,4 @@ tests = [ {'description': 'PINA: 0x00 => PINC: 0x40',
 # to be scoped at the function level (for static variables) if there are naming conflicts. The 
 # variables listed here will display everytime you hit (and stop at) a breakpoint
 
+#watch = ['tmpC', 'state', 'tmpA']

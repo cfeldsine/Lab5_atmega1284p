@@ -12,117 +12,53 @@
 #include "simAVRHeader.h"
 #endif
 
-enum states {init, press1, press2, wait1, wait2, wait, reset} state;
 
 int main(void) {
-
     DDRA = 0x00; PORTA = 0xFF;
     DDRC = 0xFF; PORTC = 0x00;
 
-    unsigned char tmpA = 0x00;
-    short tmpC = 0x07;
-    state = init;
+    unsigned char tmpA, tmpC, mask;
     while (1) {
-    	tmpA = PINA;
-	switch(state){
-	    case init:
-		if (!tmpA){
-		    state = wait;
-		} else if (tmpA == 0x01) {
-		    state = press1;
-		} else if (tmpA == 0x02) {
-		    state = press2;
-		} else {
-		    state = reset;
-		}
-		break;
-	    case press1:
-                if (!tmpA){ 
-                    state = wait; 
-                } else if (tmpA == 0x01) {
-                    state = wait1;
-                } else if (tmpA == 0x02) {
-                    state = press2;
-                } else {
-                    state = reset;
-                }
-		break;
-	    case wait1:
-		if (!tmpA){
-		    state = wait;
-		} else if (tmpA == 0x01){
-		    state = wait1;
-		} else if (tmpA == 0x02){
-		    state = press2;
-		} else {
-		    state = reset;
-		}
-	    case press2:
-                if (!tmpA){ 
-                    state = wait; 
-                } else if (tmpA == 0x01) {
-                    state = press1;
-                } else if (tmpA == 0x02) {
-                    state = wait2;
-                } else {
-                    state = reset;
-                }
-		break;
-            case wait2:
-                if (!tmpA){
-                    state = wait;
-                } else if (tmpA == 0x01){
-                    state = press1;
-                } else if (tmpA == 0x02){
-                    state = wait2;
-                } else {
-                    state = reset;
-                }
-            case wait:
-                if (!tmpA){ 
-                    state = wait; 
-                } else if (tmpA == 0x01) {
-                    state = press1;
-                } else if (tmpA == 0x02) {
-                    state = press2;
-                } else {
-                    state = reset;
-                }
-                break;
-            case reset:
-                if (!tmpA){ 
-                    state = wait; 
-                } else if (tmpA == 0x01) {
-                    state = press1;
-                } else if (tmpA == 0x02) {
-                    state = press2;
-                } else {
-                    state = reset;
-                }
-                break;
-	    default:
-		state = reset;
-		break;
+	tmpC = 0x00;
+    	tmpA = PINA & 0x0F;
+	mask = 0x01;
+
+	if (tmpA > 12) {
+	    tmpC = tmpC | mask;
+	}
+	mask *= 2;
+
+	if (tmpA > 9) {
+	    tmpC = tmpC | mask;
+	}
+	mask *= 2;
+
+        if (tmpA > 6) {
+            tmpC = tmpC | mask;
+        }
+        mask *= 2;
+
+        if (tmpA > 4) {
+            tmpC = tmpC | mask;
+        }
+        mask *= 2;
+
+        if (tmpA > 2) {
+            tmpC = tmpC | mask;
+        }
+	mask *= 2;
+
+        if (tmpA > 0) {
+            tmpC = tmpC | mask;
+        }
+
+	mask *= 2;
+
+	if (tmpA < 4) {
+	    tmpC = tmpC | mask;
 	}
 
-	switch(state){
-	    case press1:
-		if (tmpC < 9){
-		    tmpC += 1;
-		}
-		break;
-	    case press2:
-		if (tmpC > 0){
-		    tmpC -= 1;
-		}
-		break;
-	    case reset:
-		tmpC = 0x00;
-		break;
-	    default:
-		break;
-	}
-    PORTC = tmpC;
+	PORTC = tmpC;
     }
     return 1;
 }
